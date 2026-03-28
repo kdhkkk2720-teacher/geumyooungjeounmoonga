@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자산 관리 포트폴리오 학습지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --navy: #0d2240;
+    --navy-light: #163459;
+    --gold: #b8963e;
+    --gold-light: #d4af6a;
+    --gold-pale: #f5edd8;
+    --cream: #faf8f3;
+    --slate: #4a5568;
+    --slate-light: #718096;
+    --white: #ffffff;
+    --border: #d6cbb8;
+    --success: #2d6a4f;
+    --danger: #9b2335;
+    --warn: #7b5e00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #e8e4db;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(180,160,120,0.08) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(180,160,120,0.08) 40px);
+    color: var(--navy);
+    min-height: 100vh;
+  }
+
+  /* ── STICKY HEADER ── */
+  #sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--navy);
+    border-bottom: 3px solid var(--gold);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  }
+
+  #sticky-header .brand {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 900;
+    color: var(--gold);
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  #sticky-header .brand span {
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    display: block;
+    letter-spacing: 1px;
+    font-weight: 300;
+  }
+
+  .header-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+
+  .header-inputs label {
+    color: var(--gold-light);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .header-inputs input {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(184,150,62,0.4);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    width: 110px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .header-inputs input::placeholder { color: rgba(255,255,255,0.3); }
+  .header-inputs input:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(255,255,255,0.12);
+  }
+
+  #save-btn {
+    background: linear-gradient(135deg, var(--gold), #c8a84b);
+    color: var(--navy);
+    border: none;
+    padding: 9px 20px;
+    border-radius: 4px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+    box-shadow: 0 2px 8px rgba(184,150,62,0.4);
+    flex-shrink: 0;
+  }
+  #save-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(184,150,62,0.6); filter: brightness(1.05); }
+  #save-btn:active { transform: translateY(0); }
+
+  /* ── MAIN WRAPPER ── */
+  #worksheet {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* ── COVER HEADER ── */
+  .cover-header {
+    background: var(--navy);
+    color: white;
+    padding: 36px 40px;
+    border-radius: 12px 12px 0 0;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+
+  .cover-header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border: 40px solid rgba(184,150,62,0.12);
+    border-radius: 50%;
+  }
+  .cover-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: 60px;
+    width: 140px; height: 140px;
+    border: 25px solid rgba(184,150,62,0.08);
+    border-radius: 50%;
+  }
+
+  .cover-header .doc-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .cover-header h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .cover-header .subtitle {
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 1px;
+  }
+
+  .achievement-bar {
+    background: rgba(184,150,62,0.12);
+    border-left: 3px solid var(--gold);
+    padding: 12px 16px;
+    border-radius: 0 0 12px 12px;
+    margin-bottom: 28px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 300;
+    background: linear-gradient(90deg, var(--navy-light), var(--navy));
+  }
+
+  .achievement-bar strong {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  /* ── SECTION CARD ── */
+  .section-card {
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(13,34,64,0.08), 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .section-head {
+    background: var(--navy);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-num {
+    background: var(--gold);
+    color: var(--navy);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 900;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-head h2 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+  }
+
+  .section-body { padding: 24px; }
+
+  /* ── CLIENT CARD ── */
+  .client-display {
+    background: var(--gold-pale);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .client-avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+    border: 3px solid var(--gold);
+  }
+
+  .client-info { flex: 1; }
+  .client-name {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .client-meta {
+    font-size: 12px;
+    color: var(--slate);
+    margin-bottom: 10px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .client-meta span {
+    background: var(--navy);
+    color: var(--gold-light);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .client-desc {
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.7;
+    background: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border-left: 3px solid var(--gold);
+  }
+
+  .btn-random {
+    background: var(--navy);
+    color: var(--gold-light);
+    border: 1px solid var(--gold);
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-random:hover { background: var(--gold); color: var(--navy); }
+
+  /* ── LIFECYCLE CHART ── */
+  .lifecycle-container {
+    margin: 16px 0;
+  }
+
+  .lifecycle-chart {
+    width: 100%;
+    height: 160px;
+    position: relative;
+    background: linear-gradient(180deg, #f0f4ff 0%, #faf8f3 100%);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .lifecycle-chart svg { width: 100%; height: 100%; }
+
+  .lifecycle-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--slate-light);
+    padding: 0 4px;
+    margin-bottom: 16px;
+  }
+
+  .predict-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .predict-box {
+    background: var(--gold-pale);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+
+  .predict-box label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--navy);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .predict-box textarea {
+    width: 100%;
+    min-height: 70px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: var(--navy);
+    resize: vertical;
+    background: white;
+  }
+  .predict-box textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(184,150,62,0.15); }
+
+  /* ── CRITERIA SELECTOR ── */
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .criteria-card {
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    position: relative;
+  }
+
+  .criteria-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+
+  .criteria-card.selected {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+    box-shadow: 0 0 0 3px rgba(184,150,62,0.2);
+  }
+
+  .criteria-card .priority-badge {
+    position: absolute;
+    top: -10px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: none;
+  }
+
+  .criteria-card.selected .priority-badge { display: block; }
+
+  .criteria-icon { font-size: 26px; margin-bottom: 8px; }
+  .criteria-name { font-weight: 700; font-size: 14px; color: var(--navy); margin-bottom: 4px; }
+  .criteria-desc { font-size: 11px; color: var(--slate-light); line-height: 1.5; }
+
+  .priority-label {
+    font-size: 12px;
+    color: var(--slate);
+    margin-bottom: 8px;
+  }
+
+  .priority-select-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .priority-select-row label {
+    font-size: 12px;
+    color: var(--slate);
+    font-weight: 600;
+  }
+
+  .priority-select-row select {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: var(--navy);
+    background: white;
+    cursor: pointer;
+  }
+  .priority-select-row select:focus { outline: none; border-color: var(--gold); }
+
+  .reason-input {
+    width: 100%;
+    min-height: 60px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: var(--navy);
+    resize: vertical;
+    margin-top: 10px;
+  }
+  .reason-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(184,150,62,0.15); }
+
+  /* ── PRODUCT TABLE ── */
+  .product-table-wrap { overflow-x: auto; margin-bottom: 16px; }
+
+  table.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .product-table thead th {
+    background: var(--navy);
+    color: white;
+    padding: 10px 12px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .product-table thead th:first-child { border-radius: 6px 0 0 0; }
+  .product-table thead th:last-child { border-radius: 0 6px 0 0; }
+
+  .product-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .product-table tbody tr:nth-child(even) { background: #f9f8f5; }
+  .product-table tbody tr:hover { background: var(--gold-pale); }
+
+  .product-table .product-name { font-weight: 700; color: var(--navy); text-align: left; }
+
+  .risk-low { color: var(--success); font-weight: 600; }
+  .risk-mid { color: var(--warn); font-weight: 600; }
+  .risk-high { color: var(--danger); font-weight: 600; }
+
+  .recommend-check { width: 20px; height: 20px; cursor: pointer; accent-color: var(--gold); }
+
+  .product-select-area {
+    background: var(--gold-pale);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 8px;
+  }
+  .product-select-area label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .product-select-area textarea {
+    width: 100%;
+    min-height: 70px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    resize: vertical;
+    background: white;
+  }
+  .product-select-area textarea:focus { outline: none; border-color: var(--gold); }
+
+  /* ── LETTER ── */
+  .letter-wrapper {
+    background: linear-gradient(135deg, #fdfcf7 0%, #f9f5ec 100%);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 30px;
+    position: relative;
+  }
+
+  .letter-wrapper::before {
+    content: '"';
+    font-family: 'Noto Serif KR', serif;
+    font-size: 100px;
+    color: rgba(184,150,62,0.1);
+    position: absolute;
+    top: -10px; left: 10px;
+    line-height: 1;
+  }
+
+  .letter-to {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px dashed var(--border);
+  }
+
+  .letter-to span { color: var(--gold); font-family: 'Noto Serif KR', serif; }
+
+  .letter-body {
+    width: 100%;
+    min-height: 200px;
+    border: none;
+    background: transparent;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    color: var(--navy);
+    line-height: 2;
+    resize: vertical;
+    padding: 0;
+  }
+  .letter-body:focus { outline: none; }
+
+  .letter-sign {
+    text-align: right;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--slate);
+  }
+
+  .letter-sign input {
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    color: var(--navy);
+    width: 120px;
+    padding: 2px 4px;
+    text-align: center;
+  }
+  .letter-sign input:focus { outline: none; border-bottom-color: var(--gold); }
+
+  /* ── HINT BOX ── */
+  .hint-box {
+    background: #f0f4ff;
+    border: 1px solid #c5d0e8;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #2c4a8a;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .hint-box strong { color: var(--navy); font-weight: 700; }
+
+  /* ── FOOTER ── */
+  .footer-bar {
+    text-align: center;
+    font-size: 11px;
+    color: var(--slate-light);
+    letter-spacing: 2px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+  }
+
+  /* ── UTIL ── */
+  .flex-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+  .tag { background: var(--navy); color: var(--gold-light); padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+  .small-label { font-size: 11px; font-weight: 700; color: var(--slate-light); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .input-full { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--navy); background: white; }
+  .input-full:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(184,150,62,0.15); }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--navy);
+    color: var(--gold-light);
+    padding: 12px 24px;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid var(--gold);
+    transition: transform 0.3s, opacity 0.3s;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  @media print { #sticky-header { display: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<div id="sticky-header">
+  <div class="brand">
+    WEALTH ADVISORY
+    <span>자산 관리 포트폴리오 학습지</span>
+  </div>
+  <div class="header-inputs">
+    <label>학번</label>
+    <input type="text" id="student-id" placeholder="예) 20312">
+    <label>이름</label>
+    <input type="text" id="student-name" placeholder="홍길동">
+  </div>
+  <button id="save-btn" onclick="saveImage()">📥 나의 활동지 이미지로 저장하기</button>
+</div>
+
+<div id="worksheet">
+
+  <!-- COVER -->
+  <div class="cover-header">
+    <div class="doc-label">■ Financial Portfolio Worksheet · 중학교 사회 경제파트</div>
+    <h1>나는 자산 관리 전문가<br>— 고객 맞춤형 포트폴리오 설계 활동</h1>
+    <div class="subtitle">Income &amp; Lifecycle · Asset Management · Investment Recommendation</div>
+  </div>
+  <div class="achievement-bar">
+    <strong>[9사(일사)08-02]</strong> 일생 동안 이루어지는 경제생활을 분석하고, 안정적인 금융 생활을 위한 자산 및 신용 관리 방안을 계획한다.
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <h2>오늘의 고객을 만나보세요 — 고객 프로필 확인</h2>
+    </div>
+    <div class="section-body">
+      <div class="hint-box">
+        💡 <strong>활동 안내:</strong> 아래 [새 고객 뽑기] 버튼을 눌러 오늘 상담할 고객을 선택하세요. 고객의 나이, 직업, 가족 상황을 꼼꼼히 읽고 다음 활동을 진행합니다.
+      </div>
+      <button class="btn-random" onclick="drawClient()">🔀 새 고객 뽑기</button>
+      <div style="height:14px"></div>
+      <div class="client-display" id="client-display">
+        <div class="client-avatar" id="client-avatar">👤</div>
+        <div class="client-info">
+          <div class="client-name" id="client-name">버튼을 눌러 고객을 선택하세요</div>
+          <div class="client-meta" id="client-meta"></div>
+          <div class="client-desc" id="client-desc">위의 [새 고객 뽑기] 버튼을 눌러 고객 정보를 확인하세요.</div>
+        </div>
+      </div>
+      <div class="small-label">📝 고객의 현재 생애주기 단계를 기록하세요</div>
+      <input type="text" class="input-full" id="lifecycle-stage" placeholder="예) 청년기 / 장년기 / 노년기 등 — 이유와 함께 써보세요">
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-num">2</div>
+      <h2>생애주기에 따른 소득·소비 변화 예측</h2>
+    </div>
+    <div class="section-body">
+      <div class="hint-box">
+        💡 <strong>생애주기란?</strong> 사람은 태어나서 노년기까지 소득과 소비가 달라집니다. 아래 그래프는 일반적인 소득·소비 곡선입니다. 고객의 <strong>현재 위치</strong>와 <strong>앞으로의 변화</strong>를 예측해보세요.
+      </div>
+      <div class="lifecycle-container">
+        <div class="lifecycle-chart">
+          <svg viewBox="0 0 860 150" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 배경 구간 색상 -->
+            <rect x="0" y="0" width="140" height="150" fill="rgba(100,150,255,0.05)"/>
+            <rect x="140" y="0" width="220" height="150" fill="rgba(184,150,62,0.08)"/>
+            <rect x="360" y="0" width="260" height="150" fill="rgba(45,106,79,0.07)"/>
+            <rect x="620" y="0" width="240" height="150" fill="rgba(155,35,53,0.05)"/>
+            <!-- 구간 구분선 -->
+            <line x1="140" y1="0" x2="140" y2="150" stroke="#ccc" stroke-width="1" stroke-dasharray="4"/>
+            <line x1="360" y1="0" x2="360" y2="150" stroke="#ccc" stroke-width="1" stroke-dasharray="4"/>
+            <line x1="620" y1="0" x2="620" y2="150" stroke="#ccc" stroke-width="1" stroke-dasharray="4"/>
+            <!-- 소득 곡선 (파란색) -->
+            <polyline points="0,135 100,125 200,80 300,50 430,35 540,45 650,90 760,125 860,140"
+              fill="none" stroke="#4a7fd4" stroke-width="2.5" stroke-linejoin="round"/>
+            <!-- 소비 곡선 (골드) -->
+            <polyline points="0,100 100,90 200,70 300,65 430,60 540,68 650,85 760,105 860,120"
+              fill="none" stroke="#b8963e" stroke-width="2" stroke-linejoin="round" stroke-dasharray="6,3"/>
+            <!-- 범례 -->
+            <line x1="660" y1="18" x2="690" y2="18" stroke="#4a7fd4" stroke-width="2.5"/>
+            <text x="694" y="22" fill="#4a7fd4" font-size="10" font-family="sans-serif">소득</text>
+            <line x1="730" y1="18" x2="760" y2="18" stroke="#b8963e" stroke-width="2" stroke-dasharray="4,2"/>
+            <text x="764" y="22" fill="#b8963e" font-size="10" font-family="sans-serif">소비</text>
+            <!-- 현재 위치 마커 -->
+            <circle id="marker-dot" cx="-20" cy="-20" r="6" fill="#0d2240" stroke="#b8963e" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="lifecycle-labels">
+          <span>유·아동기<br>0~12세</span>
+          <span>청소년·청년기<br>13~29세</span>
+          <span>장년기<br>30~59세</span>
+          <span>노년기<br>60세~</span>
+        </div>
+      </div>
+      <div class="predict-grid">
+        <div class="predict-box">
+          <label>📈 고객의 향후 소득 변화 예측</label>
+          <textarea class="input-area" placeholder="예) 현재 취업 초기이므로 앞으로 경력이 쌓이면서 소득이 증가할 것으로 예상된다. 50대 이후 은퇴 시 소득이 급격히 감소할 수 있다."></textarea>
+        </div>
+        <div class="predict-box">
+          <label>🛒 고객의 향후 소비 변화 예측</label>
+          <textarea class="input-area" placeholder="예) 결혼·육아·주택 마련 등으로 소비가 크게 증가할 시기가 올 것이다. 자녀 독립 후에는 소비가 점차 감소할 수 있다."></textarea>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="small-label">🔍 현재 고객의 소득-소비 상태 분석</div>
+        <select class="input-full" id="income-status">
+          <option value="">— 선택하세요 —</option>
+          <option>소득 &gt; 소비 (저축 가능 → 자산 형성기)</option>
+          <option>소득 ≈ 소비 (균형 상태 → 안정 유지기)</option>
+          <option>소득 &lt; 소비 (부족 상태 → 대비 필요)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-num">3</div>
+      <h2>자산 관리 선택 기준 설정</h2>
+    </div>
+    <div class="section-body">
+      <div class="hint-box">
+        💡 자산 관리에는 세 가지 핵심 기준이 있습니다. <strong>안정성</strong>(원금 보호), <strong>수익성</strong>(높은 이익), <strong>유동성</strong>(빠른 현금화). 세 가지를 동시에 완벽히 충족하는 상품은 없습니다! 고객 상황에 맞는 <strong>우선순위</strong>를 정해보세요.
+      </div>
+      <div class="criteria-grid">
+        <div class="criteria-card" onclick="toggleCriteria(this,'안정성')">
+          <div class="priority-badge" id="badge-안정성">1순위</div>
+          <div class="criteria-icon">🛡️</div>
+          <div class="criteria-name">안정성</div>
+          <div class="criteria-desc">원금이 보장되고<br>손실 위험이 낮은 정도</div>
+        </div>
+        <div class="criteria-card" onclick="toggleCriteria(this,'수익성')">
+          <div class="priority-badge" id="badge-수익성">1순위</div>
+          <div class="criteria-icon">📈</div>
+          <div class="criteria-name">수익성</div>
+          <div class="criteria-desc">투자한 돈이 얼마나<br>많이 늘어나는가의 정도</div>
+        </div>
+        <div class="criteria-card" onclick="toggleCriteria(this,'유동성')">
+          <div class="priority-badge" id="badge-유동성">1순위</div>
+          <div class="criteria-icon">💧</div>
+          <div class="criteria-name">유동성</div>
+          <div class="criteria-desc">필요할 때 빠르게<br>현금화할 수 있는 정도</div>
+        </div>
+      </div>
+
+      <div class="priority-select-row">
+        <label>1순위:</label>
+        <select id="prio1" onchange="updateBadges()">
+          <option value="">선택</option>
+          <option>안정성</option><option>수익성</option><option>유동성</option>
+        </select>
+        <label>2순위:</label>
+        <select id="prio2" onchange="updateBadges()">
+          <option value="">선택</option>
+          <option>안정성</option><option>수익성</option><option>유동성</option>
+        </select>
+        <label>3순위:</label>
+        <select id="prio3" onchange="updateBadges()">
+          <option value="">선택</option>
+          <option>안정성</option><option>수익성</option><option>유동성</option>
+        </select>
+      </div>
+      <div class="small-label" style="margin-top:14px">📝 이 우선순위를 선택한 이유를 써보세요</div>
+      <textarea class="reason-input input-area" placeholder="예) 고객이 은퇴를 앞두고 있어 더 이상 위험을 감수하기 어렵습니다. 따라서 원금 보장이 되는 안정성을 가장 중요하게 생각하였고..."></textarea>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-num">4</div>
+      <h2>자산 관리 상품 분석 &amp; 추천 선택</h2>
+    </div>
+    <div class="section-body">
+      <div class="hint-box">
+        💡 아래 표는 주요 자산 관리 상품들의 특징입니다. 표를 꼼꼼히 읽고, 고객에게 <strong>적합한 상품에 ✅ 체크</strong>한 뒤 선택 이유를 작성하세요.
+      </div>
+      <div class="product-table-wrap">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>상품명</th>
+              <th>기대 수익률</th>
+              <th>위험성</th>
+              <th>안정성</th>
+              <th>유동성</th>
+              <th>주요 특징</th>
+              <th>추천</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="product-name">🏦 예금</td>
+              <td>연 2~4%</td>
+              <td class="risk-low">매우 낮음</td>
+              <td>⭐⭐⭐⭐⭐</td>
+              <td>⭐⭐⭐</td>
+              <td style="text-align:left;font-size:11px">은행에 맡기고 이자를 받음. 원금 보장(예금자 보호 5천만 원). 만기 전 해약 시 이자 손실.</td>
+              <td><input type="checkbox" class="recommend-check" id="chk-예금"></td>
+            </tr>
+            <tr>
+              <td class="product-name">💰 적금</td>
+              <td>연 3~5%</td>
+              <td class="risk-low">매우 낮음</td>
+              <td>⭐⭐⭐⭐⭐</td>
+              <td>⭐⭐</td>
+              <td style="text-align:left;font-size:11px">매달 일정 금액 저축. 목돈 마련에 유리. 강제 저축 효과. 중도 해약 시 불이익.</td>
+              <td><input type="checkbox" class="recommend-check" id="chk-적금"></td>
+            </tr>
+            <tr>
+              <td class="product-name">📋 보험</td>
+              <td>낮음(비용 개념)</td>
+              <td class="risk-low">낮음</td>
+              <td>⭐⭐⭐⭐</td>
+              <td>⭐</td>
+              <td style="text-align:left;font-size:11px">질병·사고 대비 위험 분산. 사망·실손·암 보험 등 다양. 보장 기능이 주 목적.</td>
+              <td><input type="checkbox" class="recommend-check" id="chk-보험"></td>
+            </tr>
+            <tr>
+              <td class="product-name">🌾 연금</td>
+              <td>연 3~6%</td>
+              <td class="risk-low">낮음~중간</td>
+              <td>⭐⭐⭐⭐</td>
+              <td>⭐</td>
+              <td style="text-align:left;font-size:11px">노후 소득 대비. 국민연금(의무)·개인연금·퇴직연금. 장기 투자, 세제 혜택 있음.</td>
+              <td><input type="checkbox" class="recommend-check" id="chk-연금"></td>
+            </tr>
+            <tr>
+              <td class="product-name">📊 펀드</td>
+              <td>연 4~15%</td>
+              <td class="risk-mid">중간</td>
+              <td>⭐⭐⭐</td>
+              <td>⭐⭐⭐</td>
+              <td style="text-align:left;font-size:11px">여러 사람 돈을 모아 전문가가 운용. 분산 투자로 위험 감소. 원금 비보장.</td>
+              <td><input type="checkbox" class="recommend-check" id="chk-펀드"></td>
+            </tr>
+            <tr>
+              <td class="product-name">📈 주식</td>
+              <td>제한 없음(손실도 가능)</td>
+              <td class="risk-high">높음</td>
+              <td>⭐</td>
+              <td>⭐⭐⭐⭐⭐</td>
+              <td style="text-align:left;font-size:11px">기업 지분 구매. 배당·시세차익 기대. 원금 손실 가능. 높은 수익 잠재력.</td>
+              <td><input type="checkbox" class="recommend-check" id="chk-주식"></td>
+            </tr>
+            <tr>
+              <td class="product-name">🏠 부동산</td>
+              <td>시세 따라 다름</td>
+              <td class="risk-mid">중간~높음</td>
+              <td>⭐⭐⭐</td>
+              <td>⭐</td>
+              <td style="text-align:left;font-size:11px">땅·건물·아파트 투자. 임대 수익+시세차익. 큰 자본 필요, 현금화 어려움.</td>
+              <td><input type="checkbox" class="recommend-check" id="chk-부동산"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="product-select-area">
+        <label>✅ 선택한 상품과 구성 비율 &amp; 이유</label>
+        <textarea class="input-area" placeholder="예) 이 고객에게는 예금 40%, 적금 30%, 보험 20%, 연금 10%를 추천합니다. 안정성이 최우선이므로 원금이 보장되는 예금과 적금 비중을 높이고, 노후 대비를 위해 연금도 포함하였습니다. 보험은 예상치 못한 질병·사고에 대비하기 위해 반드시 포함하였습니다."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section-card">
+    <div class="section-head">
+      <div class="section-num">5</div>
+      <h2>고객에게 드리는 자산 관리 권유서 작성</h2>
+    </div>
+    <div class="section-body">
+      <div class="hint-box">
+        💡 <strong>활동 안내:</strong> 지금까지 분석한 내용을 바탕으로 고객에게 자산 관리 방법을 <strong>정중하고 전문적인 어투</strong>로 권유하는 글을 작성하세요. 아래 항목을 반드시 포함하세요.<br>
+        ① 고객의 현재 상황 요약 &nbsp;② 예상되는 소득·소비 변화 &nbsp;③ 추천 상품과 이유 &nbsp;④ 당부의 말
+      </div>
+      <div class="letter-wrapper">
+        <div class="letter-to">수신: <span id="letter-client-name">고객</span> 님께 드리는 맞춤 자산 관리 제안서</div>
+        <textarea class="letter-body input-area" placeholder="존경하는 고객님,
+
+안녕하세요. 저는 오늘 고객님의 소중한 자산을 함께 고민해 볼 기회를 갖게 되어 영광입니다.
+
+고객님의 현재 상황을 살펴보면 ...
+
+생애주기를 고려하였을 때, 앞으로 고객님의 소득과 소비는 ...
+
+이에 저는 다음과 같은 자산 관리 방법을 권유드립니다.
+
+첫째, ...
+둘째, ...
+
+마지막으로 ...
+
+항상 고객님의 안정적인 금융 생활을 응원합니다."></textarea>
+        <div class="letter-sign">
+          담당 금융 전문가: <input type="text" id="advisor-name" placeholder="이름 서명">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    WEALTH ADVISORY · 자산 관리 포트폴리오 학습지 · 중학교 사회 경제파트
+  </div>
+</div>
+
+<div id="toast">📥 이미지 저장 중...</div>
+
+<script>
+// ── CLIENT DATA ──
+const clients = [
+  {
+    emoji: '🧑‍🎓',
+    name: '김지훈 (24세)',
+    meta: ['청년기', '대학 졸업 예정', '미혼', '소득 낮음'],
+    desc: '이제 막 대학을 졸업하고 첫 직장을 앞두고 있습니다. 부모님과 함께 살고 있으며 아직 저축이 거의 없습니다. 월 수입은 인턴 급여 150만 원 수준이고, 학자금 대출 잔액이 남아있습니다. 장래에는 결혼과 내 집 마련을 꿈꾸고 있습니다.',
+  },
+  {
+    emoji: '👩‍💼',
+    name: '박서연 (32세)',
+    meta: ['장년기 초반', '직장인', '기혼·자녀 1명', '소득 중간'],
+    desc: '결혼 3년차로 어린 자녀가 있습니다. 맞벌이를 하고 있으며 월 합산 소득은 약 500만 원입니다. 현재 전세로 살고 있으며 5년 안에 내 집 마련을 목표로 하고 있습니다. 자녀 교육비 지출이 점차 늘어날 것으로 예상합니다.',
+  },
+  {
+    emoji: '👨‍👩‍👧‍👦',
+    name: '최민석 (45세)',
+    meta: ['장년기 중반', '자영업자', '자녀 2명(중·고생)', '소득 높음'],
+    desc: '자신의 식당을 운영하는 자영업자입니다. 월 순수익은 약 400만 원이나 매출 변동이 큰 편입니다. 자녀 두 명이 곧 대학에 진학할 예정이라 교육비 부담이 클 것으로 보입니다. 15년 후 은퇴를 계획하고 있습니다.',
+  },
+  {
+    emoji: '👩‍🦳',
+    name: '이순희 (58세)',
+    meta: ['장년기 후반', '직장인(은퇴 2년 전)', '자녀 독립', '저축 많음'],
+    desc: '2년 후 정년 퇴직을 앞두고 있습니다. 자녀들은 모두 독립했고, 남편과 단 둘이 삽니다. 그동안 꾸준히 저축해 약 2억 원의 금융 자산이 있습니다. 은퇴 후에도 월 200만 원 이상의 안정적 수입을 원합니다.',
+  },
+  {
+    emoji: '👴',
+    name: '정태호 (68세)',
+    meta: ['노년기', '은퇴', '배우자와 둘이 거주', '국민연금 수령 중'],
+    desc: '3년 전 은퇴하였으며 국민연금 월 90만 원을 받고 있습니다. 퇴직금으로 받은 1억 원을 어떻게 굴릴지 고민 중입니다. 건강이 걱정되어 의료비 대비도 필요하며, 큰 손실은 절대 원하지 않습니다.',
+  },
+  {
+    emoji: '👩‍🔬',
+    name: '한소영 (38세)',
+    meta: ['장년기', '전문직(의사)', '미혼', '고소득'],
+    desc: '대학병원 전공의로 월 소득이 약 800만 원입니다. 아직 미혼이며 결혼 계획이 없습니다. 현재 주식 투자에 관심이 많으나 의료 업무가 바빠 직접 관리하기 어렵습니다. 공격적인 자산 증식을 원합니다.',
+  },
+];
+
+let currentClient = null;
+
+function drawClient() {
+  const client = clients[Math.floor(Math.random() * clients.length)];
+  currentClient = client;
+  document.getElementById('client-avatar').textContent = client.emoji;
+  document.getElementById('client-name').textContent = client.name;
+  document.getElementById('client-desc').textContent = client.desc;
+  document.getElementById('letter-client-name').textContent = client.name;
+  const meta = document.getElementById('client-meta');
+  meta.innerHTML = client.meta.map(m => `<span>${m}</span>`).join('');
+
+  // animate marker on chart based on age
+  const age = parseInt(client.name.match(/\d+/)[1]);
+  const xPos = Math.min(860, Math.max(0, (age / 80) * 860));
+  const dot = document.getElementById('marker-dot');
+  dot.setAttribute('cx', xPos);
+  dot.setAttribute('cy', 70);
+}
+
+// ── CRITERIA ──
+let priorityOrder = [];
+
+function toggleCriteria(el, name) {
+  const idx = priorityOrder.indexOf(name);
+  if (idx > -1) {
+    priorityOrder.splice(idx, 1);
+  } else {
+    priorityOrder.push(name);
+  }
+  updateCriteriaUI();
+  syncSelects();
+}
+
+function updateCriteriaUI() {
+  document.querySelectorAll('.criteria-card').forEach(card => {
+    const name = card.querySelector('.criteria-name').textContent;
+    const idx = priorityOrder.indexOf(name);
+    card.classList.toggle('selected', idx > -1);
+    const badge = card.querySelector('.priority-badge');
+    if (idx > -1) {
+      badge.textContent = (idx + 1) + '순위';
+    }
+  });
+}
+
+function syncSelects() {
+  ['prio1','prio2','prio3'].forEach((id, i) => {
+    document.getElementById(id).value = priorityOrder[i] || '';
+  });
+}
+
+function updateBadges() {
+  priorityOrder = ['prio1','prio2','prio3']
+    .map(id => document.getElementById(id).value)
+    .filter(v => v);
+  updateCriteriaUI();
+}
+
+// ── SAVE IMAGE ──
+async function saveImage() {
+  const toast = document.getElementById('toast');
+  toast.textContent = '📥 이미지 저장 중...';
+  toast.classList.add('show');
+
+  const sId = document.getElementById('student-id').value || '학번';
+  const sName = document.getElementById('student-name').value || '이름';
+
+  try {
+    const canvas = await html2canvas(document.getElementById('worksheet'), {
+      scale: 1.8,
+      useCORS: true,
+      backgroundColor: '#e8e4db',
+      scrollY: -window.scrollY,
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.getElementById('worksheet').scrollHeight
+    });
+
+    const link = document.createElement('a');
+    link.download = `자산관리학습지_${sId}_${sName}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    toast.textContent = '✅ 저장 완료!';
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  } catch(e) {
+    toast.textContent = '⚠️ 저장 중 오류가 발생했습니다.';
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+}
+</script>
+</body>
+</html>
